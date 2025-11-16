@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ: Xây Dựng Case Study HR Trong 5 Bước</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Font: Oswald -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Áp dụng font Oswald cho toàn bộ ứng dụng */
+        body {
+            font-family: 'Oswald', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Tùy chỉnh màu sắc thương hiệu */
+        .text-brand-orange { color: #FF9800; }
+        .bg-brand-orange { background-color: #FF9800; }
+        .hover\:bg-brand-orange-dark:hover { background-color: #F57C00; }
+        
+        .text-brand-green { color: #009688; }
+        .bg-brand-green { background-color: #009688; }
+        
+        .text-brand-blue-light { color: #5C6BC0; }
+        .bg-brand-blue-light { background-color: #5C6BC0; }
+        
+        .text-brand-blue-dark { color: #1a237e; }
+        .bg-brand-blue-dark { background-color: #1a237e; }
+
+        /* Kiểu cho form input */
+        .form-label {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 700;
+            color: #1a237e; /* text-brand-blue-dark */
+            margin-bottom: 0.5rem; /* 8px */
+            display: block;
+        }
+        .form-input {
+            width: 100%;
+            font-size: 1.125rem; /* 18px */
+            font-weight: 300;
+            padding: 0.75rem 1rem; /* 12px 16px */
+            border: 2px solid #5C6BC0; /* border-brand-blue-light */
+            border-radius: 0.5rem; /* 8px */
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #FF9800; /* border-brand-orange */
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+        }
+        .form-textarea {
+            width: 100%;
+            font-size: 1.125rem; /* 18px */
+            font-weight: 300;
+            padding: 0.75rem 1rem; /* 12px 16px */
+            border: 2px solid #5C6BC0; /* border-brand-blue-light */
+            border-radius: 0.5rem; /* 8px */
+            min-height: 120px;
+            transition: all 0.3s ease;
+        }
+
+        /* Kiểu cho khu vực kết quả */
+        #caseStudyOutput {
+            transition: all 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            border-top: 4px solid #009688; /* border-brand-green */
+        }
+        #caseStudyOutput.show {
+            max-height: 5000px; /* Đủ lớn để chứa nội dung */
+            opacity: 1;
+        }
+        #caseStudyText {
+            white-space: pre-wrap; /* Giữ lại định dạng xuống dòng */
+        }
+
+        /* Kiểu cho Tabs */
+        .tab-btn {
+            padding: 0.75rem 1.5rem; /* 12px 24px */
+            font-size: 1.25rem; /* 20px */
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 0.5rem 0.5rem 0 0; /* 8px 8px 0 0 */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            border-bottom: none;
+            /* Thêm icon và text alignment */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: -2px; /* Kéo lên trên border của panel */
+            background-color: #5C6BC0; /* bg-brand-blue-light */
+            color: white;
+        }
+        .tab-btn.inactive {
+            opacity: 0.7;
+        }
+        .tab-btn.inactive:hover {
+            opacity: 1;
+        }
+        .tab-btn.active {
+            background-color: white;
+            color: #FF9800; /* text-brand-orange */
+            border-color: #E0E0E0;
+            border-bottom: 2px solid white;
+            z-index: 10;
+        }
+        .tab-panel-container {
+            border: 2px solid #E0E0E0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-brand-blue-dark text-white text-center py-20 px-4">
+        <div class="container mx-auto max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-bold uppercase tracking-wider">CÔNG CỤ XÂY DỰNG CASE STUDY NỘI BỘ</h1>
+            <p class="text-2xl mt-4 font-light text-brand-blue-light opacity-90">Biến "Quick Win" và "Insight" thành câu chuyện tác động trong 5 bước.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-16">
+
+        <!-- Tab buttons -->
+        <nav class="flex flex-wrap -mb-px">
+            <button class="tab-btn active" data-target="#tab-tool">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                Công Cụ Xây Dựng
+            </button>
+            <button class="tab-btn inactive" data-target="#tab-guide">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13.5M12 6.253l3.146 3.146M12 6.253L8.854 9.399"></path></svg>
+                Hướng Dẫn Chi Tiết
+            </button>
+            <button class="tab-btn inactive" data-target="#tab-example">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                Ví Dụ Minh Họa
+            </button>
+            <button class="tab-btn inactive" data-target="#tab-exercise">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                Bài Tập Tình Huống
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div id="tab-content" class="tab-panel-container">
+            <!-- Tab 1: The Tool (Công cụ) -->
+            <!-- ===== KHỐI HTML ĐÃ SỬA ===== -->
+            <div id="tab-tool" class="tab-panel">
+                <!-- Section 1: The Tool (Công cụ) -->
+                <section id="tool" class="bg-white p-12 rounded-lg">
+                    <h2 class="text-4xl font-bold text-center text-brand-blue-dark uppercase mb-10">BẮT ĐẦU XÂY DỰNG CÂU CHUYỆN CỦA BẠN</h2>
+                    <div class="max-w-4xl mx-auto space-y-10">
+                        <!-- Form -->
+                        <form id="caseStudyForm" onsubmit="return false;">
+                            <!-- Step 1 -->
+                            <div class="mb-8">
+                                <label for="step1_problem" class="form-label">1. THÁCH THỨC KINH DOANH: Vấn đề là gì?</label>
+                                <textarea id="step1_problem" class="form-textarea" placeholder="VD: Tỉ lệ nghỉ việc của nhân viên Sales mới (dưới 6 tháng) quá cao (40%)..."></textarea>
+                                <label for="step1_damage" class="form-label mt-4">...Và nó gây thiệt hại bao nhiêu?</label>
+                                <input type="text" id="step1_damage" class="form-input" placeholder="VD: 1.2 tỷ doanh thu bị lãng phí, trì hoãn 4 hợp đồng lớn...">
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="mb-8">
+                                <label for="step2_hypothesis" class="form-label">2. GIẢ THUYẾT: Bạn nghĩ nguyên nhân gốc rễ là gì?</label>
+                                <textarea id="step2_hypothesis" class="form-textarea" placeholder="VD: Quy trình onboarding 30 ngày đầu cho Sales đang thất bại, không tập trung vào kỹ năng thực chiến..."></textarea>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="mb-8">
+                                <label for="step3_analysis" class="form-label">3. PHÂN TÍCH: Bạn đã phân tích dữ liệu gì để kiểm chứng?</label>
+                                <textarea id="step3_analysis" class="form-textarea" placeholder="VD: Kết hợp dữ liệu Master Data (ngày vào, ngày nghỉ) và dữ liệu Đào tạo (thời gian hoàn thành onboarding). Phát hiện: 80% NV nghỉ việc chưa hoàn thành module 'Sản phẩm X'..."></textarea>
+                            </div>
+
+                            <!-- Step 4 -->
+                            <div class="mb-8">
+                                <label for="step4_solution" class="form-label">4. GIẢI PHÁP: Bạn đã làm gì?</label>
+                                <textarea id="step4_solution" class="form-textarea" placeholder="VD: Thiết kế lại chương trình onboarding 30 ngày, tập trung 70% vào 'thực chiến' (role-play, gọi điện thực tế) thay vì lý thuyết..."></textarea>
+                                <label for="step4_result" class="form-label mt-4">...Và kết quả ra sao?</label>
+                                <input type="text" id="step4_result" class="form-input" placeholder="VD: Sau 1 quý áp dụng, tỉ lệ nghỉ việc Sales mới giảm từ 40% xuống 15%...">
+                            </div>
+
+                            <!-- Step 5 -->
+                            <div class="mb-8">
+                                <label for="step5_cost" class="form-label">5. ROI: Chi phí đầu tư là bao nhiêu?</label>
+                                <input type="text" id="step5_cost" class="form-input" placeholder="VD: 50 triệu đồng cho giảng viên và tài liệu...">
+                                <label for="step5_benefit" class="form-label mt-4">...Và lợi ích/tiết kiệm là bao nhiêu?</label>
+                                <input type="text" id="step5_benefit" class="form-input" placeholder="VD: Cứu vãn 1 tỷ doanh thu, tiết kiệm 200 triệu chi phí tuyển dụng lại...">
+                            </div>
+                        </form> <!-- Đóng form ở đây -->
+
+                        <!-- Submit Button (Nằm ngoài form) -->
+                        <div class="text-center">
+                            <button id="generateButton" type="button" class="text-3xl font-bold uppercase py-4 px-10 rounded-lg bg-brand-orange text-white hover:bg-brand-orange-dark transition-all duration-300 transform hover:scale-105">
+                                XUẤT BẢN CASE STUDY
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: The Output (Kết quả) -->
+                <section id="caseStudyOutput" class="mt-16 bg-white p-12 rounded-lg">
+                    <h2 class="text-4xl font-bold text-center text-brand-green uppercase mb-10">CASE STUDY NỘI BỘ (SẴN SÀNG TRÌNH BÀY)</h2>
+                    <div id="caseStudyContainer" class="bg-gray-100 p-8 rounded-lg shadow-inner">
+                        <pre id="caseStudyText" class="text-xl font-light text-gray-900 leading-relaxed"></pre>
+                    </div>
+                    <div class="text-center mt-8">
+                        <button id="copyButton" type="button" class="text-xl font-bold uppercase py-3 px-8 rounded-lg bg-brand-blue-light text-white hover:bg-brand-blue-dark transition-all duration-300">
+                            SAO CHÉP NỘI DUNG
+                        </button>
+                        <p id="copyMessage" class="text-brand-green font-bold mt-2" style="display: none;">Đã sao chép vào clipboard!</p>
+                    </div>
+                </section>
+            </div>
+            <!-- ===== HẾT KHỐI HTML ĐÃ SỬA ===== -->
+
+            <!-- Tab 2: Hướng Dẫn Chi Tiết -->
+            <div id="tab-guide" class="tab-panel hidden bg-white p-12">
+                <h2 class="text-3xl font-bold text-brand-blue-dark uppercase mb-6">HƯỚNG DẪN: "NÂNG CẤP" TƯ DUY TRÌNH BÀY</h2>
+                <p class="text-xl font-light mb-8">Một "Báo Cáo" (Report) chỉ <span class="font-bold">cung cấp con số</span>. Một "Case Study" (Câu chuyện Tình huống) sẽ <span class="font-bold text-brand-green">thúc đẩy hành động</span>. Đây là cách "lấp đầy" 5 bước một cách thuyết phục nhất:</p>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-bold text-brand-orange">1. THÁCH THỨC KINH DOANH:</h3>
+                        <p class="text-lg font-light ml-4">Đừng chỉ nói "tỉ lệ nghỉ việc cao". Hãy nói "tỉ lệ nghỉ việc cao (40%) gây thiệt hại 1.2 tỷ doanh thu". Luôn quy đổi vấn đề HR thành <span class="font-bold">Tiền ($)</span>, <span class="font-bold">Thời gian</span>, hoặc <span class="font-bold">Rủi ro</span>.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-brand-orange">2. GIẢ THUYẾT:</h3>
+                        <p class="text-lg font-light ml-4">Đây là công việc "thám tử" của HR. Là bước bạn liên kết "triệu chứng" (nghỉ việc) với "nguyên nhân" (onboarding hỏng). Một giả thuyết tốt sẽ dẫn đến một phân tích đúng hướng.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-brand-orange">3. PHÂN TÍCH:</h3>
+                        <p class="text-lg font-light ml-4">Đây là bằng chứng. Bạn đã dùng dữ liệu gì để chứng minh giả thuyết là đúng? Thường là kết hợp 2 bộ dữ liệu, VD: <span class="font-bold">Dữ liệu HR (ngày nghỉ)</span> + <span class="font-bold">Dữ liệu Kinh Doanh (doanh số)</span> hoặc <span class="font-bold">Dữ liệu Đào tạo (điểm số)</span>.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-brand-orange">4. GIẢI PHÁP & KẾT QUẢ:</h3>
+                        <p class="text-lg font-light ml-4">Phần này trả lời cho câu "Vậy, chúng ta đã làm gì?". Giải pháp phải <span class="font-bold">trực tiếp giải quyết</span> nguyên nhân ở Bước 2. Kết quả phải <span class="font-bold">đo lường được</span> và liên quan đến "thiệt hại" ở Bước 1.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-brand-orange">5. ROI (LỢI TỨC ĐẦU TƯ):</h3>
+                        <p class="text-lg font-light ml-4">Công thức "chốt hạ" với CFO: <span class="font-bold text-brand-green">(Lợi ích - Chi phí) / Chi phí</span>. Lợi ích chính là "thiệt hại" bạn đã ngăn chặn được. Chi phí là tiền bạn đã dùng cho "Giải pháp". Đây là con số biến HR từ "chi phí" thành "đầu tư".</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Ví Dụ Minh Họa -->
+            <div id="tab-example" class="tab-panel hidden bg-white p-12">
+                <h2 class="text-3xl font-bold text-brand-green uppercase mb-6">VÍ DỤ: CASE STUDY "LỖ HỔNG" ONBOARDING</h2>
+                <div class="space-y-6 text-lg font-light">
+                    <p><span class="font-bold text-brand-blue-dark">1. THÁCH THỨC:</span> Tỉ lệ nghỉ việc của Sales mới (dưới 6 tháng) là 40%, gấp 3 lần trung bình. Gây trì hoãn 4 hợp đồng lớn, <span class="font-bold text-red-600">thiệt hại ước tính 1.2 tỷ VNĐ</span> doanh thu tiềm năng.</p>
+                    <p><span class="font-bold text-brand-blue-dark">2. GIẢ THUYẾT:</span> Quy trình onboarding 30 ngày đầu cho Sales đang <span class="font-bold">quá nặng lý thuyết, thiếu thực chiến</span>, khiến nhân viên mới cảm thấy "sốc" khi bắt đầu công việc thực tế.</p>
+                    <p><span class="font-bold text-brand-blue-dark">3. PHÂN TÍCH:</span> Kết hợp dữ liệu (Master Data) và (Training Data). Phát hiện: <span class="font-bold">80% Sales nghỉ việc</span> chưa hoàn thành module đào tạo "Sản phẩm X" (module khó nhất). Nhóm này mất 8 tuần mới xong, trong khi nhóm "Top Performer" chỉ mất 3 tuần.</p>
+                    <p><span class="font-bold text-brand-blue-dark">4. GIẢI PHÁP & KẾT QUẢ:</span> <span class="font-bold">Giải pháp:</span> Xây dựng lại chương trình onboarding 30 ngày, tập trung 70% vào "thực chiến" (role-play, gọi điện thực tế) thay vì lý thuyết. <span class="font-bold">Kết quả (sau 1 quý):</span> Tỉ lệ nghỉ việc Sales mới <span class="font-bold text-brand-green">giảm từ 40% xuống còn 15%</span>. Tốc độ hoàn thành module "Sản phẩm X" giảm còn 4 tuần.</p>
+                    <p><span class="font-bold text-brand-blue-dark">5. ROI:</span> <span class="font-bold">Chi phí đầu tư:</span> 50 triệu VNĐ (thuê chuyên gia, tài liệu). <span class="font-bold">Lợi ích:</span> Cứu vãn 1 tỷ doanh thu (từ việc không trễ hợp đồng) + Tiết kiệm 200 triệu (chi phí tuyển dụng lại). <span class="font-bold text-brand-green">ROI = (1.2 tỷ - 50 triệu) / 50 triệu = 2300%</span>.</p>
+                </div>
+            </div>
+
+            <!-- Tab 4: Bài Tập Tình Huống -->
+            <div id="tab-exercise" class="tab-panel hidden bg-white p-12">
+                <h2 class="text-3xl font-bold text-brand-blue-dark uppercase mb-6">BÀI TẬP: TÌNH HUỐNG "ĐÀO TẠO LÃNG PHÍ?"</h2>
+                <div class="space-y-4 text-xl font-light">
+                    <p class="font-bold text-brand-orange">BỐI CẢNH:</p>
+                    <p class="italic bg-gray-100 p-4 rounded-lg">Bạn vừa chi <span class="font-bold">200 triệu VNĐ</span> cho 5 khoá đào tạo kỹ năng mềm (Giao tiếp, Lãnh đạo...). Báo cáo của bạn ghi: <span class="font-bold">"150 nhân viên tham dự, tỉ lệ hài lòng 95%"</span>. Bạn trình bày và GĐ Vận hành nói: "Tôi thấy hài lòng đấy, nhưng team tôi đi học về vẫn làm việc y như cũ, không có gì thay đổi. 200 triệu này lãng phí rồi."</p>
+                    
+                    <p class="font-bold text-brand-orange mt-6">NHIỆM VỤ CỦA BẠN:</p>
+                    <p>Bạn nhận ra báo cáo của mình đã thất bại. Bạn quyết định làm lại nó dưới dạng một "Case Study" để phân tích xem 200 triệu đó "lãng phí" hay "hiệu quả" thực sự.</p>
+                    <p class="mt-4">Hãy quay lại tab <span class="font-bold text-brand-blue-dark">"Công Cụ Xây Dựng"</span> và thử điền vào 5 bước. Gợi ý:</p>
+                    <ul class="list-disc ml-8">
+                        <li><span class="font-bold">Thách thức:</span> Không phải là "tổ chức đào tạo", mà là "200 triệu có thể đã bị lãng phí vì không tạo ra tác động kinh doanh".</li>
+                        <li><span class="font-bold">Giả thuyết:</span> "Các khoá học 'chung chung' không hiệu quả, chỉ các khoá 'chuyên biệt' giải quyết vấn đề thực tế mới có tác dụng."</li>
+                        <li><span class="font-bold">Phân tích:</span> Bạn sẽ phân tích dữ liệu gì? (Gợi ý: Dữ liệu hiệu suất (KPI, số lỗi) của 150 người này <span class="font-bold">TRƯỚC</span> và <span class="font-bold">SAU</span> khoá học).</li>
+                        <li><span class="font-bold">...v...v...</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-blue-dark text-white text-center p-8 mt-20">
+        <p class="text-lg font-light tracking-wider">Rosie Đào Hạnh Giang CEO Build Talents</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Lấy các elements một cách cẩn thận
+            const form = document.getElementById('caseStudyForm');
+            const generateButton = document.getElementById('generateButton');
+            const outputContainer = document.getElementById('caseStudyOutput');
+            const outputText = document.getElementById('caseStudyText');
+            const copyButton = document.getElementById('copyButton');
+            const copyMessage = document.getElementById('copyMessage');
+
+            // Tab logic
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetPanelId = button.dataset.target; // VD: "#tab-tool"
+
+                    // Deactivate all buttons and hide all panels
+                    tabButtons.forEach(btn => {
+                        btn.classList.add('inactive');
+                        btn.classList.remove('active');
+                    });
+                    tabPanels.forEach(panel => {
+                        panel.classList.add('hidden');
+                    });
+
+                    // Activate the clicked button and show its panel
+                    button.classList.remove('inactive');
+                    button.classList.add('active');
+                    const targetPanel = document.querySelector(targetPanelId);
+                    if (targetPanel) {
+                        targetPanel.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Chỉ thêm event listener nếu nút tồn tại
+            if (generateButton) {
+                generateButton.addEventListener('click', () => {
+                    // Lấy giá trị từ form
+                    const problem = document.getElementById('step1_problem')?.value || "[Chưa điền Thách thức]";
+                    const damage = document.getElementById('step1_damage')?.value || "[Chưa điền Thiệt hại]";
+                    const hypothesis = document.getElementById('step2_hypothesis')?.value || "[Chưa điền Giả thuyết]";
+                    const analysis = document.getElementById('step3_analysis')?.value || "[Chưa điền Phân tích]";
+                    const solution = document.getElementById('step4_solution')?.value || "[Chưa điền Giải pháp]";
+                    const result = document.getElementById('step4_result')?.value || "[Chưa điền Kết quả]";
+                    const cost = document.getElementById('step5_cost')?.value || "[Chưa điền Chi phí]";
+                    const benefit = document.getElementById('step5_benefit')?.value || "[Chưa điền Lợi ích]";
+
+                    // Tạo nội dung Case Study
+                    const caseStudyContent = `
+TIÊU ĐỀ CASE STUDY: [Hãy tự đặt 1 tiêu đề tác động, VD: "Cứu vãn 1 tỷ Doanh thu chỉ với 50 triệu đồng đầu tư Onboarding"]
+
+==================================================
+
+1. BỐI CẢNH & THÁCH THỨC (THE 'WHAT')
+Công ty đối mặt với thách thức: ${problem}.
+Tác động trực tiếp đến kinh doanh là: ${damage}.
+
+2. GIẢ THUYẾT & PHÂN TÍCH (THE 'SO WHAT?')
+Chúng tôi KHÔNG hành động ngay. Chúng tôi đặt giả thuyết: ${hypothesis}.
+Để kiểm chứng, chúng tôi phân tích: ${analysis}.
+
+3. GIẢI PHÁP & HÀNH ĐỘNG (THE 'NOW WHAT?')
+Từ insight trên, giải pháp được đưa ra là: ${solution}.
+
+4. KẾT QUẢ & ROI (THE VALUE)
+Kết quả thực tế đạt được: ${result}.
+
+Về mặt tài chính:
+- Chi phí đầu tư: ${cost}
+- Lợi ích mang lại: ${benefit}
+=> Đây là một khoản đầu tư mang lại giá trị rõ rệt cho tổ chức.
+                `;
+
+                    // Hiển thị kết quả
+                    if (outputText && outputContainer) {
+                        outputText.textContent = caseStudyContent.trim();
+                        outputContainer.classList.add('show');
+                        
+                        // Cuộn xuống kết quả
+                        outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            }
+
+            // Chỉ thêm event listener nếu nút tồn tại
+            if (copyButton) {
+                copyButton.addEventListener('click', () => {
+                    if (!outputText) return;
+                    const textToCopy = outputText.textContent;
+                    
+                    // Sử dụng document.execCommand thay vì navigator.clipboard
+                    // để đảm bảo hoạt động trong môi trường iFrame
+                    const textArea = document.createElement("textarea");
+                    textArea.value = textToCopy;
+                    textArea.style.position = "fixed"; // Ngăn cuộn trang
+                    textArea.style.left = "-9999px"; // Ẩn khỏi màn hình
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            if (copyMessage) copyMessage.style.display = 'block';
+                            setTimeout(() => {
+                                if (copyMessage) copyMessage.style.display = 'none';
+                            }, 2000);
+                        } else {
+                            console.error('Không thể sao chép');
+                        }
+                    } catch (err) {
+                        console.error('Lỗi khi sao chép: ', err);
+                    }
+                    
+                    document.body.removeChild(textArea);
+                });
+            }
+
+            // Thêm kiểm tra null cho các element JS khác nếu cần
+            if (!form) {
+                console.error("Không tìm thấy form 'caseStudyForm'.");
+            }
+            if (!outputContainer) {
+                console.error("Không tìm thấy 'caseStudyOutput'.");
+            }
+
+        });
+    </script>
+</body>
+</html>
